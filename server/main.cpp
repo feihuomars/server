@@ -99,7 +99,7 @@ int main() {
 	int send_result = 0;
 	
 
-	char buffer[BUFFER_SIZE];
+	/*char buffer[BUFFER_SIZE];
 	SecureZeroMemory(buffer, BUFFER_SIZE);
 	FILE *fp = fopen("D://test/testServer.txt", "rb");
 	if (NULL == fp) {
@@ -111,20 +111,20 @@ int main() {
 
 		send(sock_client, "jjfjfifjfi", i_result, 0);
 
-		/*while (length = fread(buffer, sizeof(char), BUFFER_SIZE, fp) > 0) {
+		while (length = fread(buffer, sizeof(char), BUFFER_SIZE, fp) > 0) {
 			if (send(sock_client, buffer, i_result, 0) < 0) {
 				cout << "send file failed" << endl;
 				break;
 			}
 			SecureZeroMemory(buffer, BUFFER_SIZE);
-		}*/
+		}
 
 
 
 		cout << "send file succeesfully" << endl;
 
 	}
-	fclose(fp);
+	fclose(fp);*/
 
 
 
@@ -166,6 +166,18 @@ int main() {
 	//	}
 	//} while (i_result > 0); //do...while语句后注意要有分号
 	//						//shutdown()禁用套接字的接收或发送功能
+
+	while (1) {
+		SecureZeroMemory(recv_buf, RECV_BUF_SIZE);
+
+		//i_result = recv(sock_client, recv_buf, RECV_BUF_SIZE, 0);
+		cout << "message received: " << recv_buf << endl;
+		send_result = send(sock_client, "message from server", RECV_BUF_SIZE, 0);
+
+	}
+
+
+
 	i_result = shutdown(sock_client, SD_SEND);
 	if (i_result == SOCKET_ERROR) {
 		cerr << "shutdown() function failed with error: " << WSAGetLastError() << "\n";
