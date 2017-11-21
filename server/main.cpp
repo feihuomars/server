@@ -11,6 +11,7 @@ using std::endl;
 const char DEFAULT_PORT[] = "4000";
 const int RECV_BUF_SIZE = 256;
 const size_t IP_BUF_SIZE = 65;
+const int BUFFER_SIZE = 1024;
 
 //服务器
 int main() {
@@ -96,43 +97,75 @@ int main() {
 	//接收和发送数据
 	char recv_buf[RECV_BUF_SIZE];
 	int send_result = 0;
-	do {
-		//不可缺少,若不将内存空间清零会输出乱码,这是因为输送过来的信息未必有256个字节
-		SecureZeroMemory(recv_buf, RECV_BUF_SIZE);
-		//标志位一般设置为0
-		i_result = recv(sock_client, recv_buf, RECV_BUF_SIZE, 0);
-		if (i_result > 0) {
-			//exit表示客户端请求断开连接
-			if (strcmp(recv_buf, "exit") == 0) {
-				cout << "client requests to close the connection..." << endl;
+	
+
+	char buffer[BUFFER_SIZE];
+	SecureZeroMemory(buffer, BUFFER_SIZE);
+	FILE *fp = fopen("D://test/testServer.txt", "rb");
+	if (NULL == fp) {
+		cout << "File open failed" << endl;
+	}
+	else {
+		cout << "File open succeed" << endl;
+		int length = 0;
+
+		send(sock_client, "jjfjfifjfi", i_result, 0);
+
+		/*while (length = fread(buffer, sizeof(char), BUFFER_SIZE, fp) > 0) {
+			if (send(sock_client, buffer, i_result, 0) < 0) {
+				cout << "send file failed" << endl;
 				break;
 			}
-			//输出接收的字节数
-			cout << "Bytes received: " << i_result << endl;
-			cout << "message received: " << recv_buf << endl;
-			//向客户端发送接收到的数据
-			send_result = send(sock_client, recv_buf, i_result, 0);
-			if (send_result == SOCKET_ERROR) {
-				cerr << "send() function failed with error: " << WSAGetLastError() << "\n";
-				closesocket(sock_client);
-				WSACleanup();
-				system("pause");
-				return 1;
-			}
-		}
-		//i_result的值为0表示连接已经关闭
-		else if (i_result == 0) {
-			cout << "connection closed..." << endl;
-		}
-		else {
-			cerr << "recv() function failed with error: " << WSAGetLastError() << "\n";
-			closesocket(sock_client);
-			WSACleanup();
-			system("pause");
-			return 1;
-		}
-	} while (i_result > 0); //do...while语句后注意要有分号
-							//shutdown()禁用套接字的接收或发送功能
+			SecureZeroMemory(buffer, BUFFER_SIZE);
+		}*/
+
+
+
+		cout << "send file succeesfully" << endl;
+
+	}
+	fclose(fp);
+
+
+
+
+	//do {
+	//	//不可缺少,若不将内存空间清零会输出乱码,这是因为输送过来的信息未必有256个字节
+	//	SecureZeroMemory(recv_buf, RECV_BUF_SIZE);
+	//	//标志位一般设置为0
+	//	i_result = recv(sock_client, recv_buf, RECV_BUF_SIZE, 0);
+	//	if (i_result > 0) {
+	//		//exit表示客户端请求断开连接
+	//		if (strcmp(recv_buf, "exit") == 0) {
+	//			cout << "client requests to close the connection..." << endl;
+	//			break;
+	//		}
+	//		//输出接收的字节数
+	//		cout << "Bytes received: " << i_result << endl;
+	//		cout << "message received: " << recv_buf << endl;
+	//		//向客户端发送接收到的数据
+	//		send_result = send(sock_client, recv_buf, i_result, 0);
+	//		if (send_result == SOCKET_ERROR) {
+	//			cerr << "send() function failed with error: " << WSAGetLastError() << "\n";
+	//			closesocket(sock_client);
+	//			WSACleanup();
+	//			system("pause");
+	//			return 1;
+	//		}
+	//	}
+	//	//i_result的值为0表示连接已经关闭
+	//	else if (i_result == 0) {
+	//		cout << "connection closed..." << endl;
+	//	}
+	//	else {
+	//		cerr << "recv() function failed with error: " << WSAGetLastError() << "\n";
+	//		closesocket(sock_client);
+	//		WSACleanup();
+	//		system("pause");
+	//		return 1;
+	//	}
+	//} while (i_result > 0); //do...while语句后注意要有分号
+	//						//shutdown()禁用套接字的接收或发送功能
 	i_result = shutdown(sock_client, SD_SEND);
 	if (i_result == SOCKET_ERROR) {
 		cerr << "shutdown() function failed with error: " << WSAGetLastError() << "\n";
