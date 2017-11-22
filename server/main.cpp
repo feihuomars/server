@@ -95,13 +95,13 @@ int main() {
 	inet_ntop(AF_INET, &addr_client, ip_buf, IP_BUF_SIZE);
 	cout << "client ip address: " << ip_buf << endl;
 	//接收和发送数据
-	char recv_buf[RECV_BUF_SIZE];
+	char recv_buf[RECV_BUF_SIZE] = "this is a test";
 	int send_result = 0;
 	
 
-	/*char buffer[BUFFER_SIZE];
-	SecureZeroMemory(buffer, BUFFER_SIZE);
-	FILE *fp = fopen("D://test/testServer.txt", "rb");
+	char buffer[BUFFER_SIZE] = "this a test";
+	//SecureZeroMemory(buffer, BUFFER_SIZE);
+	FILE *fp = fopen("D://test/picture1_copy.jpg", "wb");
 	if (NULL == fp) {
 		cout << "File open failed" << endl;
 	}
@@ -109,11 +109,12 @@ int main() {
 		cout << "File open succeed" << endl;
 		int length = 0;
 
-		send(sock_client, "jjfjfifjfi", i_result, 0);
-
-		while (length = fread(buffer, sizeof(char), BUFFER_SIZE, fp) > 0) {
-			if (send(sock_client, buffer, i_result, 0) < 0) {
-				cout << "send file failed" << endl;
+		//send(sock_client, "jjfjfifjfi", i_result, 0);
+		send(sock_client, buffer, BUFFER_SIZE, 0);
+		SecureZeroMemory(buffer, BUFFER_SIZE);
+		while (length = recv(sock_client, buffer, BUFFER_SIZE, 0) > 0) {
+			if (fwrite(buffer, sizeof(char), BUFFER_SIZE, fp) < length) {
+				cout << "write file failed" << endl;
 				break;
 			}
 			SecureZeroMemory(buffer, BUFFER_SIZE);
@@ -121,10 +122,10 @@ int main() {
 
 
 
-		cout << "send file succeesfully" << endl;
+		cout << "recv file succeesfully" << endl;
 
 	}
-	fclose(fp);*/
+	fclose(fp);
 
 
 
@@ -167,14 +168,17 @@ int main() {
 	//} while (i_result > 0); //do...while语句后注意要有分号
 	//						//shutdown()禁用套接字的接收或发送功能
 
-	while (1) {
-		SecureZeroMemory(recv_buf, RECV_BUF_SIZE);
+	/*for (int i = 0; i < 1; i++) {
+		send_result = send(sock_client, buffer, BUFFER_SIZE, 0);
+		cout << "data sent: " << i << endl;
+	}*/
+		//SecureZeroMemory(recv_buf, RECV_BUF_SIZE);
 
 		//i_result = recv(sock_client, recv_buf, RECV_BUF_SIZE, 0);
-		cout << "message received: " << recv_buf << endl;
-		send_result = send(sock_client, "message from server", RECV_BUF_SIZE, 0);
+		//cout << "message received: " << recv_buf << endl;
+		
 
-	}
+	
 
 
 
